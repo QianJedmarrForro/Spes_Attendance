@@ -2,24 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
+    use Illuminate\Database\Eloquent\Model;
 
 class Student extends Model
 {
-    
-    protected $fillable = [
-        'student_id_number', 
-        'first_name', 
-        'last_name', 
-        'email', 
-        'qr_token'
-    ];
+    // This tells Laravel to use your 'students' table
+    protected $table = 'students';
 
-    protected static function booted()
-    {
-        static::creating(function ($student) {
-            $student->qr_token = (string) Str::uuid(); 
-        });
-    }
+    // Allow these fields to be filled
+    protected $fillable = ['student_id_number', 'qr_token', 'first_name', 'last_name'];
 }

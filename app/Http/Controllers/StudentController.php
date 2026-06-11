@@ -2,32 +2,38 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Student;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class StudentController extends Controller
 {
+    public function index()
+    {
+        return view('welcome');
+    }
+
     public function store(Request $request)
-    {
-        $request->validate([
-            'student_id_number' => 'required|string',
-        ]);
+{
+    $request->validate([
+        'student_id_number' => 'required|string',
+    ]);
 
-        $idNumber = trim($request->student_id_number);
+    $idNumber = trim($request->student_id_number);
+    
+    // NOW use the Student model to search the students table
+    $student = \App\Models\Student::where('student_id_number', $idNumber)->first();
 
-        $student = Student::where('student_id_number', $idNumber)->first();
-
-        if (!$student) {
-            return back()->withErrors([
-                'student_id_number' => 'Your Student ID Number is not registered in the system master list.'
-            ]);
-        }
-
-        return redirect()->route('students.show', $student->id);
+    if (!$student) {
+        return back()->withErrors([
+            'student_id_number' => 'Your Student ID Number is not registered in the master list.'
+        ])->withInput();
     }
 
-    public function show(Student $student)
-    {
-        return view('students.show', compact('student'));
-    }
+    return view('dashboard', [
+        'student' => $student,
+        'liveEvents' => \App\Models\Attendance::latest()->take(10)->get(), 
+        'totalEnrolled' => \App\Models\Student::count(), // Use Student model here too
+        'presentToday' => \App\Models\Attendance::whereDate('scanned_at', now())->count(),
+    ]);
+}
 }
