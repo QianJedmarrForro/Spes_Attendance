@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Models\User; // FIXED: Imported the User model namespace
 
 class Attendance extends Model
 {
     use HasFactory;
+
+    protected $table = 'attendances';
 
     /**
      * The attributes that are mass assignable.
@@ -17,11 +18,13 @@ class Attendance extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'user_id',
+        'student_id', 
         'attendance_date',
         'scanned_at',
         'time_in',
         'time_out',
+        'time_in_pm',   
+        'time_out_pm',  
         'status',
     ];
 
@@ -32,14 +35,15 @@ class Attendance extends Model
      */
     protected $casts = [
         'attendance_date' => 'date',
-        'scanned_at' => 'datetime',
+        'scanned_at'      => 'datetime',
     ];
 
     /**
-     * Fetch the owning user/student record linked to this log.
+     * Get the student that owns the attendance record.
+     * @return BelongsTo
      */
-    public function user(): BelongsTo
+    public function student(): BelongsTo 
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Student::class, 'student_id', 'id');
     }
 }

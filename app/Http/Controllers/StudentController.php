@@ -20,7 +20,6 @@ class StudentController extends Controller
 
     $idNumber = trim($request->student_id_number);
     
-    // NOW use the Student model to search the students table
     $student = \App\Models\Student::where('student_id_number', $idNumber)->first();
 
     if (!$student) {
@@ -32,7 +31,7 @@ class StudentController extends Controller
     return view('dashboard', [
         'student' => $student,
         'liveEvents' => \App\Models\Attendance::latest()->take(10)->get(), 
-        'totalEnrolled' => \App\Models\Student::count(), // Use Student model here too
+        'totalEnrolled' => \App\Models\Student::count(), 
         'presentToday' => \App\Models\Attendance::whereDate('scanned_at', now())->count(),
     ]);
 }

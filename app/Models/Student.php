@@ -2,13 +2,22 @@
 
 namespace App\Models;
 
-    use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;
 
 class Student extends Model
 {
-    // This tells Laravel to use your 'students' table
     protected $table = 'students';
 
-    // Allow these fields to be filled
-    protected $fillable = ['student_id_number', 'qr_token', 'first_name', 'last_name'];
+    protected $fillable = [
+        'student_id_number',
+        'first_name',
+        'last_name',
+        'email',
+        'qr_token',
+    ];
+
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class, 'student_id');
+    }
 }

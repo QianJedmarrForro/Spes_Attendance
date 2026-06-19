@@ -13,20 +13,21 @@ return new class extends Migration
     {
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
-            // Relationship linking to your users table
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             
-            // Core structural metrics referenced by IndividualAttendanceController
+            // Relationship linking to students table
+            $table->foreignId('student_id')->constrained('students')->onDelete('cascade');
+            
+            // Core structural metrics referenced by DashboardController
             $table->date('attendance_date');
             $table->timestamp('scanned_at')->useCurrent();
             $table->time('time_in')->nullable();
             $table->time('time_out')->nullable();
-            $table->string('status')->default('present'); // e.g., 'present', 'absent', 'late'
+            $table->string('status')->default('present');
             
             $table->timestamps();
 
             // Indexing performance optimizers for rapid dashboard count queries
-            $table->index(['attendance_date', 'user_id']);
+            $table->index(['attendance_date', 'student_id']);
         });
     }
 
